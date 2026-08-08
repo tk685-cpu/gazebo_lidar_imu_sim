@@ -1,0 +1,11 @@
+# colcon workspace build artifacts (in case this pkg sits inside a ws checkout)
+build/
+install/
+log/
+
+# python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
