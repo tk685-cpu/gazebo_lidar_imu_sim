@@ -38,7 +38,7 @@ Visualization Manager:
       Name: LaserScan
       Enabled: false
       Topic:
-        Value: /scan
+        Value: /lidar
         Depth: 5
         Durability Policy: Volatile
         Reliability Policy: Best Effort

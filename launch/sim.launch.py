@@ -26,6 +26,16 @@ def generate_launch_description():
         default_value='true',
         description='Launch RViz2 alongside the simulation',
     )
+    extra_gz_args_arg = DeclareLaunchArgument(
+        'extra_gz_args',
+        default_value='-s',
+        description=(
+            "Extra flags passed to 'ign gazebo'/'gz sim'. Defaults to '-s' "
+            '(server-only), which is required on macOS since the gz-sim GUI '
+            'client does not run natively there (see gazebosim/gz-sim#44). '
+            "Pass extra_gz_args:='' on Linux to get the full GUI window."
+        ),
+    )
 
     xacro_file = os.path.join(pkg_share, 'urdf', 'robot.urdf.xacro')
     robot_description = ParameterValue(
@@ -40,7 +50,12 @@ def generate_launch_description():
                 'gz_sim.launch.py',
             )
         ),
-        launch_arguments={'gz_args': [LaunchConfiguration('world'), ' -r']}.items(),
+        launch_arguments={
+            'gz_args': [
+                LaunchConfiguration('world'), ' -r ',
+                LaunchConfiguration('extra_gz_args'),
+            ],
+        }.items(),
     )
 
     robot_state_publisher = Node(
@@ -64,10 +79,17 @@ def generate_launch_description():
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        parameters=[{
-            'config_file': os.path.join(pkg_share, 'config', 'ros_gz_bridge.yaml'),
-            'use_sim_time': True,
-        }],
+        arguments=[
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+            '/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
+            '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+            '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
+            '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
+            '/imu@sensor_msgs/msg/Imu[gz.msgs.IMU',
+            '/lidar@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/lidar/points@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked',
+        ],
+        parameters=[{'use_sim_time': True}],
         output='screen',
     )
 
@@ -83,6 +105,7 @@ def generate_launch_description():
     return LaunchDescription([
         world_arg,
         use_rviz_arg,
+        extra_gz_args_arg,
         gz_sim,
         robot_state_publisher,
         spawn_robot,
