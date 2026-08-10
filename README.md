@@ -61,7 +61,8 @@ source install/setup.bash
 ```bash
 sudo apt install ros-humble-desktop ros-humble-ros-gz \
     ros-humble-robot-state-publisher ros-humble-joint-state-publisher \
-    ros-humble-joint-state-publisher-gui ros-humble-xacro ros-humble-rviz2
+    ros-humble-joint-state-publisher-gui ros-humble-xacro ros-humble-rviz2 \
+    ros-humble-rviz-imu-plugin
 
 mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src
 git clone https://github.com/tk685-cpu/gazebo_lidar_imu_sim.git

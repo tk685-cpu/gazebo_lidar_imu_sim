@@ -43,7 +43,7 @@ Visualization Manager:
         Durability Policy: Volatile
         Reliability Policy: Best Effort
       Size (m): 0.05
-    - Class: rviz_default_plugins/Imu
+    - Class: rviz_imu_plugin/Imu
       Name: Imu
       Enabled: true
       Topic:
